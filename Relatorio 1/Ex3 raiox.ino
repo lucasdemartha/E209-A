@@ -20,6 +20,7 @@ int main (void){
   PORTD &= ~(BIT2);
   PORTD &= ~(BIT3);
   
+  char tempo = 0;
   
   for(;;){
 	
@@ -44,20 +45,20 @@ int main (void){
       }
       else if((PINB&BIT2) == BIT2){
         PORTD &= ~(BIT1);
-        _delay_ms(3000);
-        PORTD |= BIT1;
-        while((PINB&BIT3) == 0){
-          if((PINC&BIT1) == BIT1){
-            PORTD |= BIT3;
-            _delay_ms(500);
-            PORTD &= ~(BIT3);
-            _delay_ms(500);
-          }
-          else{
-            PORTD &= ~(BIT3+BIT1);
-            break;
-          }
+        while(tempo < 3){
+              if((PINC&BIT1) == BIT1){
+                  PORTD |= BIT3;
+                  _delay_ms(500);
+                  PORTD &= ~(BIT3);
+                  _delay_ms(500);
+                  tempo++;
+              }
+              else{
+                  PORTD &= ~(BIT3+BIT1);
+                  break;
+              }
         }
+        PORTD |= BIT1;
       }
       else if((PINB&BIT3) == BIT3){
         PORTD &= ~(BIT0);
