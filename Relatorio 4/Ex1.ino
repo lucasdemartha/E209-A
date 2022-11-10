@@ -1,4 +1,4 @@
-//https://www.tinkercad.com/things/7z1a8OiX1ka-ex1-relatorio-4/editel
+//https://www.tinkercad.com/things/7z1a8OiX1ka
 
 #define BIT0 0b00000001
 #define BIT1 0b00000010
