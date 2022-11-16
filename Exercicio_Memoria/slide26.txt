@@ -1,0 +1,12 @@
+1)Memoria estatica - Consegue ler e escrever em alta velocidade
+  Memoria dinamica - Consegue ler e escrever em alta velocidade porem ela perda as informacoes periodicamentes por usar uma corrente de fuga
+
+2)DRAM
+
+3)Memorias nao volateis: ROM, PROM e EPROM
+
+4)A SRAM é mais cara, mais rápida, e ocupa mais espaço que a DRAM, o que faz com que a SRAM seja usada para criar uma memória mais próxima do processador, a cache. enquanto que a DRAM é usada para fazer os módulos de RAM, fornecendo uma muito maior quantidade de RAM ao sistema.
+
+5)Memoria FLASH
+
+6)Consome menos energia e é bem mais rapida do que a memoria flash.

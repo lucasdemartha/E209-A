@@ -1,0 +1,8 @@
+1)32.768 bits e 114.688 bits
+
+2)100ns
+
+3)Volateis - precisam de energia eletrica para reter as informacoes armazenadas
+  Não volateis - não precisam de energia para que mantenha os dados
+
+4)10.240 bites
