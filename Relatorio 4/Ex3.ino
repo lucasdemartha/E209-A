@@ -1,6 +1,4 @@
 //https://www.tinkercad.com/things/4sGvKS7mzyC
-#include <Arduino.h>
-
 #define BIT0 0b00000001
 #define BIT1 0b00000010
 #define BIT2 0b00000100
@@ -9,32 +7,51 @@
 #define BIT5 0b00100000
 #define BIT6 0b01000000
 #define BIT7 0b10000000
+#define PINO 1
+
+unsigned int leitura_AD;
+unsigned int temperatura_aux;
+int temperatura;
+float tensao;
+
+int main(){
+
+Serial.begin(9600);
 
 
-ISR(ADC_vect){
-  unsigned int leitura = ADC;
-  float tensao = ((5*leitura)/1023);
-  float temperatura = ((tensao*20)/5);
-  
-  Serial.begin(9600);
-  Serial.println(temperatura);
-  
-  ADCSRA |= (1 << ADSC);
-}
+//Determinação do pino de leitura do conversor AD
+ADMUX = BIT6;
+ADMUX = ((ADMUX & 0xF8) | PINO); 	
 
-int main (void){
+//Configuração do Conversor AD
+ADCSRA = (BIT7 + BIT2 + BIT1 + BIT0); //Habilitação do Conversor e Prescaler de 128
+ADCSRB = 0; //Garantia de conversão única
+DIDR0; //Desabilitação dos PINOS usados no AD para entrada digital - Não obrigatório
 
-  EICRA |= BIT1 + BIT0;
-  EIMSK |= BIT0;
-  
-  ADMUX = 0b01000001; //A2
-  ADCSRA |= (1<< ADPS2) | (1<< ADPS1) | (1<< ADPS0) | (1<< ADIE) | (1<< ADEN); //ADPS CONFIGURA PRESCALER //ADIE HABILITA INTERRUPCAO //ADEN HABILITA ADC
-  ADCSRA |= (1 << ADSC); //ENTRA NA INTERRUPCAO
-  ADCSRB = 0;
+for (;;){
 
-  sei();
-
-  for(;;){
+  //Leitura do Conversor AD com média de conversão
+  unsigned int SomaLeitura = 0, MediaLeitura;
+  for(int i = 0; i < 5; i++){
     
-  } 
+    ADCSRA |= BIT6;
+    while((ADCSRA & BIT6) == BIT6);
+    
+    leitura_AD = (ADCL | (ADCH << 8)); //Ou leitura_AD = ADC;
+    SomaLeitura += leitura_AD;
+
+  }
+  MediaLeitura = SomaLeitura / 5;
+  tensao = (MediaLeitura * 5) / 1023.0; // Variável auxiliar para o cálculo
+  tensao = tensao - 1;
+  // de -200 a 850 - faixa de temperatura do sensor pt100
+  if(tensao>0){
+	temperatura = (tensao * 262.5) - 200;
+	Serial.print("temperatura: ");
+	Serial.println(temperatura);
+  }
+  _delay_ms(500);
+  
+} 
+
 }

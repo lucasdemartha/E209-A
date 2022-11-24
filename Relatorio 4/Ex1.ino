@@ -11,7 +11,7 @@
 
 ISR(ADC_vect){
   unsigned int leitura = ADC;
-  float tensao = ((5*leitura)/1023);
+  float tensao = ((5*leitura)/1023.0);
   
   Serial.begin(9600);
   Serial.println(tensao);

@@ -1,5 +1,4 @@
 //https://www.tinkercad.com/things/lNHG92p268j
-
 #define BIT0 0b00000001
 #define BIT1 0b00000010
 #define BIT2 0b00000100
@@ -9,41 +8,42 @@
 #define BIT6 0b01000000
 #define BIT7 0b10000000
 
-ISR(ADC_vect){
-  Serial.begin(9600);
-  
-  float Leitura_AD;
-  float SomaLeitura;
-  float MediaLeitura;
-  
-  for(int i=0; i <=5; i++){
-   ADMUX = ((ADMUX & 0xF8) | i);
-   ADCSRA |= BIT6;
-   while((ADCSRA & BIT6) == BIT6);
-   Leitura_AD = (ADCL | (ADCH << 8));
-   SomaLeitura += Leitura_AD;
-  }
-  MediaLeitura = SomaLeitura/6;
-  
-  Serial.println(MediaLeitura);
-  
-  ADCSRA |= (1 << ADSC);
-}
+unsigned int leitura_AD;
+float tensao;
 
+int main(){
 
-int main (void){
-  
-  
-  Serial.begin(9600);
-  
-  ADMUX = BIT6; //A1
-  ADCSRA |= (1<< ADPS2) | (1<< ADPS1) | (1<< ADPS0) | (1<< ADIE) | (1<< ADEN); //ADPS CONFIGURA PRESCALER //ADIE HABILITA INTERRUPCAO //ADEN HABILITA ADC
-  ADCSRA |= (1 << ADSC); //ENTRA NA INTERRUPCAO
-  ADCSRB = 0;
+Serial.begin(9600);
 
-  sei();
+//Configuração do Conversor AD
+ADMUX = BIT6;
+ADCSRA = (BIT7 + BIT2 + BIT1 + BIT0); //Habilitação do Conversor e Prescaler de 128
+ADCSRB = 0; //Garantia de conversão única
+DIDR0; //Desabilitação dos PINOS usados no AD para entrada digital - Não obrigatório
 
-  for(;;){
-    
-  } 
+for (;;){
+
+	//Leitura do Conversor AD com média de conversão
+	unsigned int SomaLeitura = 0, MediaLeitura;
+	for(int i = 0; i < 6; i++){
+	  
+	ADMUX = ((ADMUX & 0xF8) | i); 	
+
+	ADCSRA |= BIT6;
+	while((ADCSRA & BIT6) == BIT6);
+
+	leitura_AD = (ADCL | (ADCH << 8)); //Ou leitura_AD = ADC;
+	SomaLeitura += leitura_AD;
+
+	}
+	MediaLeitura = SomaLeitura / 6;
+	tensao = (MediaLeitura * 5) / 1023.0;
+	Serial.print("tensao: ");
+	Serial.println(tensao);
+  	Serial.println("--------------");
+
+	_delay_ms(100);
+  
+} 
+
 }
